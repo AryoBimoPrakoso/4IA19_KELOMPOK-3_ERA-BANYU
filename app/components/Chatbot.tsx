@@ -52,10 +52,10 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="fixed flex items-end gap-4 bottom-0 right-0 mb-8 mr-8 z-50 pointer-events-none">
+    <div className="fixed flex items-end gap-1 md:gap-4 bottom-0 right-0 mb-8 mr-2 md:mr-8 z-50 pointer-events-none">
       {/* UI ChatBot */}
       <div
-        className={`mt-4 w-[350px] h-[500px] bg-[#f8f8f8] rounded-3xl shadow-xl overflow-hidden flex flex-col border pointer-events-auto transition-all duration-300 ${
+        className={`mt-4 w-[300px] md:w-[350px] h-[450px] md:h-[500px] bg-[#f8f8f8] rounded-3xl shadow-xl overflow-hidden flex flex-col border pointer-events-auto transition-all duration-300 ${
           chat ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
         }`}
       >
@@ -125,7 +125,7 @@ const Chatbot = () => {
         <Image
           src={ikonChatbot}
           alt="Chatbot"
-          className="w-16 drop-shadow-lg"
+          className="w-8 md:w-16 drop-shadow-lg"
         />
       </button>
     </div>

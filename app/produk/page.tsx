@@ -24,40 +24,40 @@ interface Produk {
 
 const Produk = () => {
   return (
-    <div className="pt-[80px]">
+    <div className="overflow-hidden">
       {/* Banner */}
       <div className="w-full">
         <Image
           src={bannerProduk}
           alt="Banner"
-          className="h-[250px] w-full object-cover"
+          className="h-[200px] md:h-[250px] w-full object-cover"
         />
       </div>
 
       {/* Grid Produk */}
       <div className="container mx-auto py-16">
-        <div className="grid grid-cols-4 gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-10 px-8 justify-center">
           {DummyProduk.map((product) => (
             <div key={product.id}>
-              <div className="bg-[#E6E6E6] rounded-xl shadow-sm p-5 flex flex-col gap-4">
+              <div className="bg-[#E6E6E6] w-full rounded-xl shadow-sm p-3 flex flex-col gap-2 md:gap-4">
                 {/* IMAGE */}
                 <Image
                   src={dummyProdukImg}
                   alt="Dummy Produk"
-                  className="w-full h-40 object-cover rounded-md"
+                  className="h-24 w-full md:h-40 object-cover rounded-md"
                 />
 
                 {/* TEXT */}
                 <div>
-                  <h2 className="text-[16px] font-medium">{product.title}</h2>
-                  <h2 className="text-[18px] font-semibold">
+                  <h2 className="text-xs md:text-base font-medium">{product.title}</h2>
+                  <h2 className="text-sm md:text-lg font-semibold">
                     Mulai Rp {product.price.toLocaleString()}
                   </h2>
                 </div>
 
                 {/* BUTTON */}
                 <Link href={`/produk/${toSlug(product.id, product.title)}`}>
-                  <button className="w-full py-2 bg-primary text-white hover:brightness-75 duration-300 rounded-md text-sm">
+                  <button className="w-full md:py-2 bg-primary text-white hover:brightness-75 duration-300 rounded-md text-sm">
                     Lihat Produk
                   </button>
                 </Link>

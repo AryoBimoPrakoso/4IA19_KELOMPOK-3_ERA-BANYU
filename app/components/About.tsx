@@ -15,7 +15,7 @@ const About = () => {
   return (
     <div className="drop-shadow-md">
       <section id="tentang-kami" className="bg-primary text-white">
-        <div className="p-14 flex flex-col md:flex-row justify-between gap-8">
+        <div className="md:p-14 p-6 py-14 flex flex-col md:flex-row justify-between gap-8">
           <h1 className="text-4xl">Tentang Kami</h1>
           <p className="md:w-1/2 md:text-2xl text-lg font-light leading-tight">
             PT. ERA BANYU SEGARA menyediakan solusi pengemasan yang dirancang
@@ -28,7 +28,7 @@ const About = () => {
         </div>
       </section>
       <section id="layanan">
-        <div className="h-full p-[56px] ">
+        <div className="h-full py-14 md:px-14 px-6 ">
           <div className="flex flex-col w-full">
             <div className="flex flex-col gap-[24px]">
               <div>

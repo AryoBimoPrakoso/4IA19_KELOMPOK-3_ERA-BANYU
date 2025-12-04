@@ -34,7 +34,7 @@ const Navbar = () => {
           <Image
             src={EraBanyuLogo}
             alt="Era Banyu Segara"
-            className="w-1/2 hidden md:flex"
+            className="w-64 hidden md:flex"
           />
           <Image
             src={EraBanyuLogoMobile}
