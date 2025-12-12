@@ -26,7 +26,7 @@ const Navbar = () => {
     <>
       {/* Navbar */}
       <div
-        className={`fixed w-screen bg-white z-[999] transition-shadow duration-300 ${
+        className={`sticky top-0 w-full bg-white z-[999] transition-shadow duration-300 ${
           shadow ? "shadow-md" : ""
         }`}
       >

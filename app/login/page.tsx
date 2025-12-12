@@ -70,13 +70,11 @@ const Login = () => {
         </div>
 
         {/* LOGIN BUTTON */}
-        <button className="w-full py-2 bg-black text-white rounded-md text-sm">
-          <Link href="/dashboard" className="text-center text-xs underline">
+        <Link href="/dashboard" className="text-center text-xs underline">
+          <button className="w-full py-2 bg-black text-white rounded-md text-sm hover:bg-black/70 duration-300">
             Login
-          </Link>
-        </button>
-
-        
+          </button>
+        </Link>
       </div>
     </div>
   );
