@@ -30,7 +30,7 @@ const MonthFilter = ({ value, onChange }: Props) => {
   }, []);
 
   return (
-    <div ref={ref} className="relative w-56">
+    <div ref={ref} className="relative w-56 z-[999]">
       {/* Trigger */}
       <button
         onClick={() => setOpen((v) => !v)}

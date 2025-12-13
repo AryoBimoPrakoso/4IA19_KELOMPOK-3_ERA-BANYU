@@ -42,8 +42,8 @@ const Barchart = ({ data, month }: Props) => {
         <Tooltip />
         <Bar
           dataKey="sales"
-          fill="#8884d8"
-          activeBar={<Rectangle fill="pink" stroke="blue" />}
+          fill="#0099A5"
+          activeBar={<Rectangle fill="#7bf6ffff"  />}
         />
       </BarChart>
     </div>
