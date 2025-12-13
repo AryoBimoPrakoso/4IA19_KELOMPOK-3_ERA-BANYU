@@ -18,7 +18,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 h-screen bg-white rounded-r-3xl shadow-lg flex flex-col justify-between py-8">
+    <aside className="w-64 h-screen bg-white shadow-lg flex flex-col justify-between py-8">
       {/* Menu */}
       <nav className="flex flex-col gap-2 px-6">
         {menuItems.map((item) => {
