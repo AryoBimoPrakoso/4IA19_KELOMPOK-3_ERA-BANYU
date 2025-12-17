@@ -7,18 +7,17 @@ import { postApi } from "@/lib/apiClient";
 import { FaArrowLeft, FaSave, FaImage } from "react-icons/fa";
 
 // Definisi State Form
-interface ProductForm {
+interface ProductFormCreate {
   name: string;
   sku: string;
-  category: string;
-  price: string;        // String dulu agar input kosong tidak jadi 0
+  price: string;
   stock: string;
-  minStock: string;
   minOrder: string;
   unit: string;
-  specification: string;
   description: string;
   imageUrl: string;
+  material: string;
+  size: string;
 }
 
 const CreateKatalogPage = () => {
@@ -27,23 +26,24 @@ const CreateKatalogPage = () => {
   const [error, setError] = useState("");
 
   // Initial State
-  const [formData, setFormData] = useState<ProductForm>({
+  const [formData, setFormData] = useState<ProductFormCreate>({
     name: "",
     sku: "",
-    category: "General",
     price: "",
     stock: "",
-    minStock: "",
     minOrder: "1",
     unit: "pcs",
-    specification: "",
     description: "",
     imageUrl: "",
+    material: "",
+    size: "",
   });
 
   // Handle Perubahan Input Text/Number
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -76,7 +76,12 @@ const CreateKatalogPage = () => {
 
     try {
       // 1. Validasi Manual (Opsional, tapi bagus untuk UX)
-      if (!formData.name || !formData.sku || !formData.price || !formData.unit) {
+      if (
+        !formData.name ||
+        !formData.sku ||
+        !formData.price ||
+        !formData.unit
+      ) {
         throw new Error("Mohon lengkapi field yang bertanda bintang (*).");
       }
 
@@ -84,18 +89,17 @@ const CreateKatalogPage = () => {
       const payload = {
         name: formData.name,
         sku: formData.sku,
-        category: formData.category,
-        
+
         // Konversi ke number karena backend mengharapkan angka
         price: Number(formData.price),
         currentStock: Number(formData.stock) || 0,
-        minStockLevel: Number(formData.minStock) || 0,
         minOrderQuantity: Number(formData.minOrder) || 1,
-        
+
         unit: formData.unit,
-        specification: formData.specification,
         description: formData.description,
-        imageUrl: formData.imageUrl, 
+        imageUrl: formData.imageUrl,
+        material: formData.material,
+        size: formData.size,
       };
 
       // 3. Kirim ke Backend (POST)
@@ -104,7 +108,6 @@ const CreateKatalogPage = () => {
       // 4. Sukses
       alert("Produk berhasil ditambahkan!");
       router.push("/katalog");
-
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Gagal menambahkan produk.");
@@ -140,7 +143,9 @@ const CreateKatalogPage = () => {
       >
         {/* --- Bagian Gambar --- */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">Foto Produk</label>
+          <label className="text-sm font-semibold text-gray-700">
+            Foto Produk
+          </label>
           <div className="flex items-start gap-6">
             <div className="w-32 h-32 bg-gray-50 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center relative">
               {formData.imageUrl ? (
@@ -203,22 +208,6 @@ const CreateKatalogPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1">
-            <label className="text-sm font-medium">Kategori</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-md outline-none focus:border-black focus:ring-1 focus:ring-black transition bg-white"
-            >
-              <option value="General">General</option>
-              <option value="Makanan">Makanan</option>
-              <option value="Minuman">Minuman</option>
-              <option value="Paket">Paket</option>
-              <option value="Bahan Baku">Bahan Baku</option>
-            </select>
-          </div>
-
-          <div className="space-y-1">
             <label className="text-sm font-medium">
               Harga (Rp) <span className="text-red-500">*</span>
             </label>
@@ -233,11 +222,25 @@ const CreateKatalogPage = () => {
               placeholder="0"
             />
           </div>
+          {/* Input Ukuran */}
+          <div className="space-y-1">
+            <label className="text-sm font-medium">Ukuran</label>
+            <input
+              type="text"
+              name="size"
+              value={formData.size}
+              onChange={handleChange}
+              className="w-full border border-gray-300 p-2 rounded-md outline-none focus:border-black"
+              placeholder="Contoh: 20x30 cm, Besar, Kecil"
+            />
+          </div>
         </div>
 
         {/* --- Inventaris --- */}
         <div className="pt-4 border-t border-gray-100">
-          <h3 className="text-md font-semibold text-gray-800 mb-4">Inventaris</h3>
+          <h3 className="text-md font-semibold text-gray-800 mb-4">
+            Inventaris
+          </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-1">
               <label className="text-sm font-medium">Stok Awal</label>
@@ -252,15 +255,14 @@ const CreateKatalogPage = () => {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-medium">Min. Stok Level</label>
+              <label className="text-sm font-medium">Bahan (Material)</label>
               <input
-                type="number"
-                name="minStock"
-                value={formData.minStock}
+                type="text"
+                name="material"
+                value={formData.material}
                 onChange={handleChange}
-                min="0"
-                className="w-full border border-gray-300 p-2 rounded-md outline-none focus:border-black transition"
-                placeholder="0"
+                className="w-full border border-gray-300 p-2 rounded-md outline-none focus:border-black"
+                placeholder="Contoh: Plastik, Besi, Kertas"
               />
             </div>
             <div className="space-y-1">
@@ -297,18 +299,6 @@ const CreateKatalogPage = () => {
 
         {/* --- Detail Lainnya --- */}
         <div className="space-y-4 pt-4 border-t border-gray-100">
-          <div className="space-y-1">
-            <label className="text-sm font-medium">Spesifikasi (Opsional)</label>
-            <input
-              type="text"
-              name="specification"
-              value={formData.specification}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-md outline-none focus:border-black transition"
-              placeholder="Contoh: Isi 24 botol @600ml"
-            />
-          </div>
-
           <div className="space-y-1">
             <label className="text-sm font-medium">Deskripsi (Opsional)</label>
             <textarea

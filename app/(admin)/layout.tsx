@@ -2,6 +2,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import AdminProtectedLayout from "../components/admin/AdminProtectedLayout";
+import MobileBlocker from "../components/admin/MobileBlocker";
 
 // Sekarang Anda BISA menggunakan metadata di sini
 export const metadata: Metadata = {
@@ -16,8 +17,8 @@ export default function AdminLayout({
 }) {
   return (
     // Kita bungkus children dengan Client Component yang berisi logika auth
-    <AdminProtectedLayout>
-      {children}
-    </AdminProtectedLayout>
+    <MobileBlocker>
+      <AdminProtectedLayout>{children}</AdminProtectedLayout>
+    </MobileBlocker>
   );
 }

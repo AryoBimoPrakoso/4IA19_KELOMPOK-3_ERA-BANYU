@@ -14,11 +14,13 @@ const NavbarAdmin = () => {
           src={logo}
           alt="Era Banyu Segara"
           className="w-64 hidden md:flex"
+          priority
         />
         <Image
           src={logoMobile}
           alt="Era Banyu Segara"
           className="w-8 flex md:hidden"
+          priority
         />
 
         <h1 className="font-medium">Admin1</h1>

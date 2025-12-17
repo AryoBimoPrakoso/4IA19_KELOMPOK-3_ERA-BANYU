@@ -4,16 +4,19 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FaPlus, FaTrash, FaEdit } from "react-icons/fa"; 
+import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 
 interface Product {
   id: string;
   name: string;
   price: number;
   stock: number;
-  category: string;
   imageUrl?: string;
   description?: string;
+  material?: string;
+  size?: string;
+  minOrderQuantity?: number;
+  unit: number;
 }
 
 const Katalog = () => {
@@ -101,18 +104,20 @@ const Katalog = () => {
             <table className="w-full text-left text-sm text-gray-600">
               <thead className="bg-gray-50 uppercase text-xs font-semibold text-gray-700 border-b">
                 <tr>
+                  {/* SESUAI REQUEST ANDA */}
                   <th className="px-6 py-4">Gambar</th>
                   <th className="px-6 py-4">Nama Produk</th>
-                  <th className="px-6 py-4">Kategori</th>
-                  <th className="px-6 py-4">Harga</th>
-                  <th className="px-6 py-4">Stok</th>
+                  <th className="px-6 py-4">Harga / Pcs</th>
+                  <th className="px-6 py-4">Bahan</th>
+                  <th className="px-6 py-4">Ukuran</th>
+                  <th className="px-6 py-4">Min. Pesanan</th>
                   <th className="px-6 py-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {products.map((item) => (
                   <tr key={item.id} className="hover:bg-gray-50 transition">
-                    {/* Gambar */}
+                    {/* 1. IMAGE */}
                     <td className="px-6 py-4">
                       <div className="w-12 h-12 bg-gray-200 rounded-md overflow-hidden relative">
                         {item.imageUrl ? (
@@ -123,55 +128,48 @@ const Katalog = () => {
                             className="object-cover"
                           />
                         ) : (
-                          <div className="flex items-center justify-center h-full text-xs text-gray-500">
+                          <div className="flex items-center justify-center h-full text-xs">
                             No Img
                           </div>
                         )}
                       </div>
                     </td>
 
-                    {/* Nama */}
+                    {/* 2. NAMA BARANG */}
                     <td className="px-6 py-4 font-medium text-gray-900">
                       {item.name}
                     </td>
 
-                    {/* Kategori */}
-                    <td className="px-6 py-4">
-                      <span className="bg-blue-100 text-blue-700 py-1 px-3 rounded-full text-xs font-medium">
-                        {item.category || "Umum"}
-                      </span>
-                    </td>
-
-                    {/* Harga */}
-                    <td className="px-6 py-4 text-gray-900 font-semibold">
+                    {/* 3. HARGA / PCS */}
+                    <td className="px-6 py-4 font-semibold text-gray-900">
                       {formatRupiah(item.price)}
                     </td>
 
-                    {/* Stok */}
-                    <td className="px-6 py-4">
-                      {item.stock > 0 ? (
-                        <span className="text-green-600 font-medium">
-                          {item.stock} unit
-                        </span>
-                      ) : (
-                        <span className="text-red-500 font-medium">Habis</span>
-                      )}
+                    {/* 4. BAHAN (MATERIAL) */}
+                    <td className="px-6 py-4">{item.material || "-"}</td>
+
+                    {/* 5. UKURAN (SIZE) */}
+                    <td className="px-6 py-4">{item.size || "-"}</td>
+
+                    {/* 6. MINIMUM PESANAN */}
+                    <td className="px-6 py-4 text-center">
+                      <span className="bg-gray-100 text-gray-600 py-1 px-3 rounded-full text-xs font-medium border border-gray-200">
+                        {item.minOrderQuantity || 1} {item.unit || "pcs"}
+                      </span>
                     </td>
 
-                    {/* Aksi */}
+                    {/* AKSI */}
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-3">
-                        {/* Tombol Edit: Kirim ID lewat Query Params */}
-                        <Link href={`/katalog/edit?id=${item.id}`}>
-                          <button className="text-blue-600 hover:text-blue-800 p-1">
+                        <Link href={`/katalog/edit/${item.id}`}>
+                          {/* Perbaikan Link Edit */}
+                          <button className="text-blue-600 hover:text-blue-800">
                             <FaEdit size={16} />
                           </button>
                         </Link>
-
-                        {/* Tombol Hapus */}
                         <button
                           onClick={() => handleDelete(item.id)}
-                          className="text-red-500 hover:text-red-700 p-1"
+                          className="text-red-500 hover:text-red-700"
                         >
                           <FaTrash size={16} />
                         </button>

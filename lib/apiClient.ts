@@ -109,3 +109,38 @@ export async function deleteApi(endpoint: string, requireAuth: boolean = false) 
         throw error;
     }
 }
+
+export async function putApi(endpoint: string, body: any, requireAuth: boolean = true) {
+    const url = `${API_BASE_URL}/${endpoint}`;
+
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+    };
+
+    if (requireAuth) {
+        const token = localStorage.getItem('token');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify(body),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || data.error || `Gagal mengirim data. Status: ${response.status}`);
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error("Error API Call (PUT):", error);
+        throw error;
+    }
+}
