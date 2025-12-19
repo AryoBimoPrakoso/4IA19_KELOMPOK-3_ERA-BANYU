@@ -26,9 +26,10 @@ const YearFilter = ({ value, onChange, options }: Props) => {
     <div ref={ref} className="relative z-[50]">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center justify-between gap-2 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition w-full sm:w-auto shadow-sm"
+        className="flex items-center justify-between gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition w-full sm:w-auto shadow-sm"
       >
-        <span className="truncate">{value || "Pilih Tahun"}</span>
+        <span>Pilih Tahun :</span>
+        <span className="truncate text-primary">{value || "Pilih Tahun"}</span>
         <span className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}>
           <ChevronDown className="w-4 h-4" />
         </span>
@@ -52,7 +53,7 @@ const YearFilter = ({ value, onChange, options }: Props) => {
                 setOpen(false);
               }}
               className={`block w-full px-4 py-2 text-left text-sm transition-colors ${
-                y === value ? "bg-black text-white" : "text-gray-700 hover:bg-gray-50"
+                y === value ? "bg-gray-100" : "text-gray-400 hover:text-black"
               }`}
             >
               {y}

@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { getApi, postApi, putApi } from '@/lib/apiClient'; // Gunakan helper yang sudah ada
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getApi, postApi, putApi } from "@/lib/apiClient"; // Gunakan helper yang sudah ada
+import { CircleAlert } from "lucide-react";
+import Swal from "sweetalert2";
 
 interface OrderForm {
   nama: string;
   kontak: string;
   detail: string;
   jumlah: string;
-  total: string | number; 
+  total: string | number;
   tanggalPesan: string;
   tanggalPembayaran: string;
   status: string;
@@ -18,22 +20,22 @@ interface OrderForm {
 const EditLaporanContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const id = searchParams.get('id');
+  const id = searchParams.get("id");
 
   const [form, setForm] = useState<OrderForm>({
-    nama: '',
-    kontak: '',
-    detail: '',
-    jumlah: '',
-    total: '',
-    tanggalPesan: '',
-    tanggalPembayaran: '',
-    status: 'Diproses'
+    nama: "",
+    kontak: "",
+    detail: "",
+    jumlah: "",
+    total: "",
+    tanggalPesan: "",
+    tanggalPembayaran: "",
+    status: "Diproses",
   });
 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // 1. Fetch Data jika Mode Edit
   useEffect(() => {
@@ -43,19 +45,19 @@ const EditLaporanContent = () => {
         try {
           // GET /api/v1/admin/orders/:id
           const data = await getApi(`admin/orders/${id}`, true);
-          
+
           setForm({
-            nama: data.nama || '',
-            kontak: data.kontak || '',
-            detail: data.detail || '',
-            jumlah: data.jumlah || '',
-            total: data.total || '', // Load sebagai number/string
-            tanggalPesan: data.tanggalPesan || '',
-            tanggalPembayaran: data.tanggalPembayaran || '',
-            status: data.status || 'Diproses'
+            nama: data.nama || "",
+            kontak: data.kontak || "",
+            detail: data.detail || "",
+            jumlah: data.jumlah || "",
+            total: data.total || "", // Load sebagai number/string
+            tanggalPesan: data.tanggalPesan || "",
+            tanggalPembayaran: data.tanggalPembayaran || "",
+            status: data.status || "Diproses",
           });
         } catch (err: any) {
-          setError('Gagal memuat data order: ' + err.message);
+          setError("Gagal memuat data order: " + err.message);
         } finally {
           setFetching(false);
         }
@@ -65,7 +67,9 @@ const EditLaporanContent = () => {
   }, [id]);
 
   // 2. Handle Change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -73,25 +77,33 @@ const EditLaporanContent = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const payload = {
         ...form,
-        total: Number(form.total) || 0 // Pastikan kirim Number ke backend
+        total: Number(form.total) || 0, // Pastikan kirim Number ke backend
       };
 
       if (id) {
         // Mode Edit: PUT
         await putApi(`admin/orders/${id}`, payload, true);
-        alert("Data berhasil diperbarui!");
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Data berhasil diperbarui",
+          icon: "success",
+        });
       } else {
         // Mode Buat: POST
         await postApi(`admin/orders`, payload, true);
-        alert("Data berhasil ditambahkan!");
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Data berhasil ditambahkan!",
+          icon: "success",
+        });
       }
 
-      router.push('/laporan');
+      router.push("/laporan");
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Terjadi kesalahan saat menyimpan.");
@@ -105,14 +117,22 @@ const EditLaporanContent = () => {
   return (
     <div className="p-6 lg:p-10 bg-gray-50 min-h-screen">
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-8">
-        <h1 className="text-2xl font-bold mb-6">{id ? 'Edit' : 'Tambah'} Laporan Pesanan</h1>
+        <h1 className="text-2xl font-bold mb-6">
+          {id ? "Edit" : "Tambah"} Laporan Pesanan
+        </h1>
 
-        {error && <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">{error}</div>}
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Nama Pelanggan</label>
+              <label className="block text-sm font-medium mb-2">
+                Nama Pelanggan
+              </label>
               <input
                 type="text"
                 name="nama"
@@ -125,7 +145,9 @@ const EditLaporanContent = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Kontak / HP</label>
+              <label className="block text-sm font-medium mb-2">
+                Kontak / HP
+              </label>
               <input
                 type="text"
                 name="kontak"
@@ -138,7 +160,9 @@ const EditLaporanContent = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-2">Detail Produk</label>
+              <label className="block text-sm font-medium mb-2">
+                Detail Produk
+              </label>
               <input
                 type="text"
                 name="detail"
@@ -151,7 +175,9 @@ const EditLaporanContent = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Jumlah Pesanan</label>
+              <label className="block text-sm font-medium mb-2">
+                Jumlah Pesanan
+              </label>
               <input
                 type="text"
                 name="jumlah"
@@ -164,7 +190,9 @@ const EditLaporanContent = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Total Harga (Rp)</label>
+              <label className="block text-sm font-medium mb-2">
+                Total Harga (Rp)
+              </label>
               <input
                 type="number"
                 name="total"
@@ -177,7 +205,9 @@ const EditLaporanContent = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Tanggal Pesanan</label>
+              <label className="block text-sm font-medium mb-2">
+                Tanggal Pesanan
+              </label>
               <input
                 type="date"
                 name="tanggalPesan"
@@ -189,7 +219,9 @@ const EditLaporanContent = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Tanggal Pembayaran</label>
+              <label className="block text-sm font-medium mb-2">
+                Tanggal Pembayaran
+              </label>
               <input
                 type="date"
                 name="tanggalPembayaran"
@@ -197,6 +229,12 @@ const EditLaporanContent = () => {
                 onChange={handleChange}
                 className="w-full p-3 border rounded-lg outline-none"
               />
+              <div className="flex mt-2 py-1 px-4 bg-orange-50 rounded-md">
+                <CircleAlert className="h-4 text-orange-500" />
+                <p className="text-xs text-orange-500">
+                  Kosongkan jika belum lunas.
+                </p>
+              </div>
             </div>
 
             <div>
@@ -220,11 +258,11 @@ const EditLaporanContent = () => {
               disabled={loading}
               className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 transition"
             >
-              {loading ? 'Menyimpan...' : 'Simpan Data'}
+              {loading ? "Menyimpan..." : "Simpan Data"}
             </button>
             <button
               type="button"
-              onClick={() => router.push('/laporan')}
+              onClick={() => router.push("/laporan")}
               className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
             >
               Batal

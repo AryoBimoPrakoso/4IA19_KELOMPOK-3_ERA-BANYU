@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { postApi } from "@/lib/apiClient";
 import { FaArrowLeft, FaSave, FaImage } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 // Definisi State Form
 interface ProductFormCreate {
@@ -55,7 +56,11 @@ const CreateKatalogPage = () => {
     if (file) {
       // Validasi ukuran (Max 2MB)
       if (file.size > 2 * 1024 * 1024) {
-        alert("Ukuran file terlalu besar (Maksimal 2MB)");
+        Swal.fire({
+          title: "Peringatan!",
+          text: "Ukuran file terlalu besar (max 2mb)",
+          icon: "warning",
+        });
         return;
       }
 
@@ -106,7 +111,11 @@ const CreateKatalogPage = () => {
       await postApi("admin/products", payload, true);
 
       // 4. Sukses
-      alert("Produk berhasil ditambahkan!");
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Produk berhasil ditambahkan.",
+        icon: "success",
+      });
       router.push("/katalog");
     } catch (err: any) {
       console.error(err);

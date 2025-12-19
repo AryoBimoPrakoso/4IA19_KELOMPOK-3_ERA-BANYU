@@ -11,8 +11,8 @@ import YearFilter from "@/app/components/admin/YearFilter";
 interface Order {
   id: string;
   total: number;
-  jumlah: string; // Contoh: "1000 pcs" -> perlu parsing
-  detail: string; // Nama produk
+  jumlah: string;
+  detail: string;
   tanggalPesan: string;
   status: string;
 }
@@ -27,17 +27,12 @@ export default function DashboardPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // --- STATE FILTER ---
-  const today = new Date();
-  
-  // Default: Bulan & Tahun saat ini (Bahasa Indonesia)
-  const currentMonthName = new Intl.DateTimeFormat("id-ID", { month: "long" }).format(today);
-  const currentYear = today.getFullYear().toString();
+  // --- 1. STATE DEFAULT "Semua" ---
+  // Agar dashboard menampilkan total keseluruhan saat pertama kali dibuka
+  const [selectedMonth, setSelectedMonth] = useState("Semua");
+  const [selectedYear, setSelectedYear] = useState("Semua");
 
-  const [selectedMonth, setSelectedMonth] = useState(currentMonthName);
-  const [selectedYear, setSelectedYear] = useState(currentYear);
-
-  // 1. Fetch Data Orders
+  // Fetch Data Orders
   const fetchOrders = async () => {
     setIsLoading(true);
     try {
@@ -55,39 +50,44 @@ export default function DashboardPage() {
     fetchOrders();
   }, []);
 
-  // 2. Siapkan Opsi Tahun (Dinamis dari data)
+  // --- 2. LOGIKA OPSI TAHUN (Include "Semua") ---
   const yearOptions = useMemo(() => {
     const years = new Set<string>();
-    years.add(new Date().getFullYear().toString()); // Selalu masukkan tahun ini
+    // Selalu masukkan tahun saat ini
+    years.add(new Date().getFullYear().toString());
+    
     orders.forEach((o) => {
       if (o.tanggalPesan) {
         const d = new Date(o.tanggalPesan);
         if (!isNaN(d.getTime())) years.add(d.getFullYear().toString());
       }
     });
-    // Sort Descending (2025, 2024...)
-    return Array.from(years).sort().reverse();
+    
+    const sortedYears = Array.from(years).sort().reverse();
+    // Tambahkan opsi "Semua" di awal
+    return ["Semua", ...sortedYears];
   }, [orders]);
 
-  // 3. Kalkulasi Data Dashboard (Memoized)
+  // --- 3. KALKULASI DATA DASHBOARD ---
   const dashboardData = useMemo(() => {
-    // A. FILTER DATA (Bulan & Tahun)
+    // A. FILTER DATA
     const filtered = orders.filter((order) => {
-      // Abaikan status 'Batal' agar statistik akurat
+      // Wajib Status 'Selesai' (Agar revenue akurat)
       if (order.status !== 'Selesai') return false;
+      
       if (!order.tanggalPesan) return false;
-
       const d = new Date(order.tanggalPesan);
       if (isNaN(d.getTime())) return false;
 
-      // Cek Tahun
+      // Filter Tahun (Jika bukan "Semua", cek kesesuaian)
       const orderYear = d.getFullYear().toString();
-      if (selectedYear && orderYear !== selectedYear) return false;
+      if (selectedYear !== "Semua" && orderYear !== selectedYear) return false;
 
-      // Cek Bulan
-      const orderMonthName = new Intl.DateTimeFormat("id-ID", { month: "long" }).format(d);
-      // Case-insensitive comparison
-      if (selectedMonth && orderMonthName.toLowerCase() !== selectedMonth.toLowerCase()) return false;
+      // Filter Bulan (Jika bukan "Semua", cek kesesuaian)
+      if (selectedMonth !== "Semua") {
+         const orderMonthName = new Intl.DateTimeFormat("id-ID", { month: "long" }).format(d);
+         if (orderMonthName.toLowerCase() !== selectedMonth.toLowerCase()) return false;
+      }
 
       return true;
     });
@@ -95,18 +95,18 @@ export default function DashboardPage() {
     // B. HITUNG STATISTIK
     let revenue = 0;
     let totalQty = 0;
-    const productStats: Record<string, number> = {}; // Map: { "Produk A": 100, "Produk B": 50 }
+    const productStats: Record<string, number> = {};
 
     filtered.forEach((order) => {
-      // 1. Revenue
+      // Revenue
       revenue += Number(order.total) || 0;
 
-      // 2. Quantity (Parsing string "1000 pcs" -> 1000)
+      // Quantity (Parse "1000 pcs" -> 1000)
       const qtyMatch = order.jumlah ? order.jumlah.match(/\d+/) : null;
       const qty = qtyMatch ? parseInt(qtyMatch[0]) : 0;
       totalQty += qty;
 
-      // 3. Grouping Produk (Untuk Chart & Best Seller)
+      // Grouping Produk
       const productName = order.detail || "Tanpa Nama";
       if (!productStats[productName]) {
         productStats[productName] = 0;
@@ -114,7 +114,7 @@ export default function DashboardPage() {
       productStats[productName] += qty;
     });
 
-    // C. CARI BEST SELLER
+    // C. BEST SELLER
     let bestSellerName = "-";
     let maxSold = -1;
 
@@ -125,14 +125,13 @@ export default function DashboardPage() {
       }
     });
 
-    // D. SIAPKAN DATA CHART (Format Recharts: { range: string, sales: number })
-    // Urutkan dari penjualan terbanyak, ambil Top 5 atau 10
+    // D. DATA CHART
     const chartData = Object.entries(productStats)
-      .sort(([, a], [, b]) => b - a) // Descending by qty
-      .slice(0, 10) // Top 10 Produk
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10) // Top 10
       .map(([name, qty]) => ({
-        range: name, // X-Axis: Nama Produk
-        sales: qty,  // Y-Axis: Jumlah Terjual
+        range: name,
+        sales: qty,
       }));
 
     return {
@@ -149,13 +148,20 @@ export default function DashboardPage() {
     return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(num);
   };
 
+  // Helper Judul Chart
+  const chartTitle = () => {
+    if (selectedMonth === "Semua" && selectedYear === "Semua") return "Semua Waktu";
+    if (selectedMonth === "Semua") return `Tahun ${selectedYear}`;
+    return `${selectedMonth} ${selectedYear}`;
+  };
+
   return (
     <div className="p-6 lg:p-10 space-y-8 bg-gray-50 min-h-screen">
       {/* Header + Filter */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
-          <p className="text-sm text-gray-500">Ringkasan performa bisnis Anda.</p>
+          <p className="text-sm text-gray-500">Ringkasan performa bisnis (Status: Selesai).</p>
         </div>
 
         <div className="flex gap-3">
@@ -163,13 +169,13 @@ export default function DashboardPage() {
           <MonthFilter 
             value={selectedMonth} 
             onChange={setSelectedMonth} 
-            options={INDONESIA_MONTHS} 
+            options={["Semua", ...INDONESIA_MONTHS]} // Tambah opsi "Semua"
           />
           {/* Filter Tahun */}
           <YearFilter 
             value={selectedYear} 
             onChange={setSelectedYear} 
-            options={yearOptions} 
+            options={yearOptions} // Sudah termasuk "Semua" dari useMemo
           />
         </div>
       </div>
@@ -188,7 +194,7 @@ export default function DashboardPage() {
           {/* Chart Penjualan Produk */}
           <Barchart 
             data={dashboardData.chartData} 
-            title={`${selectedMonth} ${selectedYear}`} 
+            title={chartTitle()} 
           />
         </>
       )}

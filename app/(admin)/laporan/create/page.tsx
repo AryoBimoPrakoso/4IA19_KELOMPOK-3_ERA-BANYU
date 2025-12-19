@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postApi } from "@/lib/apiClient";
 import { CircleAlert, MoveLeft, Plus } from "lucide-react";
+import Swal from "sweetalert2";
 
 // Interface untuk Initial State
 interface OrderForm {
@@ -68,7 +69,11 @@ export default function CreateLaporanPage() {
       // Panggil API POST
       await postApi("admin/orders", payload, true);
 
-      alert("Laporan pesanan berhasil ditambahkan!");
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Laporan berhasil ditambahkan",
+        icon: "success",
+      });
       router.push("/laporan"); // Kembali ke list laporan
     } catch (err: any) {
       console.error(err);
@@ -213,7 +218,7 @@ export default function CreateLaporanPage() {
                 className="w-full p-2.5 border border-gray-300 rounded-lg outline-none transition"
               />
               <div className="flex mt-2 py-1 px-4 bg-orange-50 rounded-md">
-                <CircleAlert className="h-4 text-orange-500"/>
+                <CircleAlert className="h-4 text-orange-500" />
                 <p className="text-xs text-orange-500">
                   Kosongkan jika belum lunas.
                 </p>

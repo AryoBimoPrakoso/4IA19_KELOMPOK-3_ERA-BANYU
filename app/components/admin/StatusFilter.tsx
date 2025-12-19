@@ -27,9 +27,10 @@ const StatusFilter = ({ value, onChange }: StatusFilterProps) => {
     <div ref={ref} className="relative z-[50]">
       <button
         onClick={() => setOpenStatus((v) => !v)}
-        className="flex items-center justify-between gap-2 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition w-full sm:w-auto shadow-sm"
+        className="flex items-center justify-between gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition w-full sm:w-auto shadow-sm"
       >
-        <span>{value}</span>
+        <span>Status : </span>
+        <span className="text-primary">{value}</span>
         <span className={`transition-transform duration-200 ${openStatus ? "rotate-180" : ""}`}>
           <ChevronDown className="h-4 w-4" />
         </span>

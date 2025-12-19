@@ -4,7 +4,7 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 interface Product {
   id: string;
@@ -55,9 +55,17 @@ const Katalog = () => {
 
       // refresh data tanpa reload halaman
       await fetchProducts();
-      alert("Product berhasil dihapus!");
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Berhasil menghapus produk",
+        icon: "success",
+      });
     } catch (err: any) {
-      alert(err.message || "Gagal menghapus produk");
+      Swal.fire({
+        title: "Gagal",
+        text: (err.message || "Gagal menghapus produk"),
+        icon: "error",
+      });
     }
   };
 

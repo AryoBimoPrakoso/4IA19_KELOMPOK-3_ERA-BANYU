@@ -4,7 +4,7 @@ import { getApi, putApi } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 import Image from "next/image";
-
+import Swal from "sweetalert2";
 
 // Definisi State Form
 interface ProductFormEdit {
@@ -78,7 +78,7 @@ const EditProduct = ({ params }: { params: Promise<{ id: string }> }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -88,7 +88,11 @@ const EditProduct = ({ params }: { params: Promise<{ id: string }> }) => {
     if (file) {
       // Validasi ukuran (Max 2MB)
       if (file.size > 2 * 1024 * 1024) {
-        alert("Ukuran file terlalu besar (Maksimal 2MB)");
+        Swal.fire({
+          title: "Peringatan!",
+          text: "Ukuran file terlalu besar (max 2mb)",
+          icon: "warning",
+        });
         return;
       }
 
@@ -123,11 +127,19 @@ const EditProduct = ({ params }: { params: Promise<{ id: string }> }) => {
 
       await putApi(`admin/products/${id}`, payload, true);
 
-      alert("Produk berhasil diupdate!");
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Berhasil mengupdate data!",
+        icon: "success",
+      });
       router.push("/katalog");
     } catch (err: any) {
       console.error("Error update produk : ", err);
-      alert("Gagal update produk : " + (err.message || "Error server"));
+      Swal.fire({
+        title: "Gagal!",
+        text: "Gagal mengupdate data!" + (err.message || "Error server"),
+        icon: "error",
+      });
     } finally {
       setIsLoading(false);
     }
