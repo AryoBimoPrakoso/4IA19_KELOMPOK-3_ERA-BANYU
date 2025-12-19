@@ -9,20 +9,48 @@ import logoKatalog from "@/public/assets/svg/katalog-icon.svg";
 import logoLaporan from "@/public/assets/svg/laporan-icon.svg";
 
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 const Sidebar = () => {
   // Ini yang bikin active state akurat!
-  const pathname = usePathname(); 
+  const pathname = usePathname();
   // buat logout
   const router = useRouter();
 
-  const handleLogout = () => {
-    // hapus token & data damin dari localStorage
-    localStorage.removeItem("token");
-    localStorage.removeItem("adminData");
+const handleLogout = () => {
+  Swal.fire({
+    title: 'Logout Admin?',
+    text: 'Anda akan keluar dari panel admin. Pastikan sudah menyimpan perubahan!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Ya, Logout!',
+    cancelButtonText: 'Batal',
+    customClass: {
+      popup: 'animate__animated animate__fadeInDown',
+      confirmButton: 'btn-logout',
+      cancelButton: 'btn-cancel',
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Hapus token & data admin dari localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("adminData");
 
-    router.push("/login");
-  };
+      // Optional: SweetAlert success
+      Swal.fire({
+        title: 'Logout Berhasil!',
+        text: 'Sampai jumpa lagi, Admin!',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      router.push("/login");
+    }
+  });
+};
 
   const menuItems = [
     { href: "/dashboard", label: "Dashboard", icon: logoDashboard },

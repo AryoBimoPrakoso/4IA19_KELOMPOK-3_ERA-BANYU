@@ -8,7 +8,6 @@ const { UnauthorizedError, ForbiddenError } = require('../utils/customError');
 // =======================================
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return next(new UnauthorizedError('Akses ditolak. Token tidak ditemukan atau format tidak valid. Gunakan format: Bearer <token>.'));
     }
@@ -63,6 +62,35 @@ const authorizeRoles = (...allowedRoles) => {
 // Memastikan verifyToken selalu dijalankan SEBELUM authorizeRoles
 const verifyAdmin = [verifyToken, authorizeRoles('editor', 'superadmin')];
 const verifySuperAdmin = [verifyToken, authorizeRoles('superadmin')];
+
+
+// SuperAdmin
+exports.verifySuperAdmin = async (req, res, next) => {
+  try {
+    // Pastikan user sudah login (req.user diset oleh verifyToken sebelumnya)
+    if (!req.user || !req.user.uid) {
+      throw new UnauthorizedError("Anda belum login.");
+    }
+
+    // Cek role di Database Firestore
+    const userDoc = await db.collection("users").doc(req.user.uid).get();
+    
+    if (!userDoc.exists) {
+      throw new UnauthorizedError("User tidak ditemukan.");
+    }
+
+    const userData = userDoc.data();
+
+    // Cek apakah role-nya 'superadmin'
+    if (userData.role !== "superadmin") {
+      throw new ForbiddenError("Akses ditolak! Hanya Super Admin yang boleh melakukan ini.");
+    }
+
+    next(); // Lanjut jika aman
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 // =======================================
