@@ -43,6 +43,12 @@ backend/uploads/
 backend/logs/
 backend/*.log
 
+# CHATBOT PYTHON
+chatbot/__pycache__/
+chatbot/**/__pycache__/
+chatbot/*.pyc
+chatbot/.env
+
 # vercel
 .vercel
 
