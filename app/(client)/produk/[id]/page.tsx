@@ -34,7 +34,7 @@ const ProductDetail = ({ params }: { params: Promise<{ id: string }> }) => {
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const res = await getApi(`admin/products/${id}`, true);
+      const res = await getApi(`products/${id}`, false);
       const dataProduk = res.data || res;
       setProduct(dataProduk);
     } catch (err: any) {

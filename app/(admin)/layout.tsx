@@ -8,6 +8,9 @@ import MobileBlocker from "../components/admin/MobileBlocker";
 export const metadata: Metadata = {
   title: "Admin Dashboard | Era Banyu Segara",
   description: "Halaman administrasi untuk manajemen produk dan pesanan.",
+    icons: {
+    icon: "/icon.svg"
+  }
 };
 
 export default function AdminLayout({

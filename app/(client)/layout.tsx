@@ -8,6 +8,9 @@ import Footer from "../components/client/Footer";
 export const metadata: Metadata = {
   title: "Era Banyu Segara",
   description: "Pt. Era Banyu Segara",
+  icons: {
+    icon: "/icon.svg"
+  }
 };
 
 export default function ClientLayout({

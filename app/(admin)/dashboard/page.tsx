@@ -28,7 +28,6 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   // --- 1. STATE DEFAULT "Semua" ---
-  // Agar dashboard menampilkan total keseluruhan saat pertama kali dibuka
   const [selectedMonth, setSelectedMonth] = useState("Semua");
   const [selectedYear, setSelectedYear] = useState("Semua");
 
@@ -169,13 +168,13 @@ export default function DashboardPage() {
           <MonthFilter 
             value={selectedMonth} 
             onChange={setSelectedMonth} 
-            options={["Semua", ...INDONESIA_MONTHS]} // Tambah opsi "Semua"
+            options={["Semua", ...INDONESIA_MONTHS]} 
           />
           {/* Filter Tahun */}
           <YearFilter 
             value={selectedYear} 
             onChange={setSelectedYear} 
-            options={yearOptions} // Sudah termasuk "Semua" dari useMemo
+            options={yearOptions} 
           />
         </div>
       </div>
