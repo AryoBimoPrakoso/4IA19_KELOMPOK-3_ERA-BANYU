@@ -172,10 +172,10 @@ const Chatbot = () => {
         {/* Availability */}
         <div className="p-3 flex flex-col items-center gap-1 text-center text-xs text-gray-500 justify-center">
           <p className="flex gap-1">
-            <span>⏱</span>Admin Tersedia Senin–Jumat, 08.00–17.00 WIB.
+            <span>⏱</span>Admin tersedia Senin–Jumat, 08.00–17.00 WIB.
           </p>
           <p>
-            Hubungi <Link href="https://wa.me/6289501349416" className="text-blue-500 underline">WhatsApp</Link>
+            Hubungi <Link href="https://wa.me/6281289505095" className="text-blue-500 underline" target="_blank">WhatsApp</Link>
           </p>
         </div>
 

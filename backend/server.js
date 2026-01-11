@@ -113,7 +113,7 @@ app.get('/', (req, res) => {
 });
 
 // -----------------------------------------------------------
-// 5. Integrasi Rute API (Semua Rute Anda)
+// 5. Integrasi Rute API (Semua Rute)
 // -----------------------------------------------------------
 const API_PREFIX = '/api/v1'; // Prefix umum untuk versi API
 
