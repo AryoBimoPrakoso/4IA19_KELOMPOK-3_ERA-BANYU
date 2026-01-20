@@ -2,7 +2,7 @@
 
 UNIT TEST - 4IA19_KELOMPOK-3_ERA-BANYU/qa-testing
 
-MANUAL TESTING - https://docs.google.com/spreadsheets/d/1qfts0Sycbb1INIswpJcw9HVWFtH6ExodVM6iyNtbMHo/edit?usp=sharing
+MANUAL TESTING - https://docs.google.com/spreadsheets/d/1kAJ_QN6rGl54l6fdWaOcHkUKgTQ-40-_Yiw5i5A9R3Y/edit?usp=sharing
 
 ## Peran
 QA 
